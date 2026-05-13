@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+    <canvas id="c" width="300" height="300" style="border:1px solid black"></canvas>
+    <p id="sonuc">Puan: 0</p>
+    <a href="index.html">ANA SAYFAYA DÖN </a>
+
+
+    <script>
+        let ctx = document.getElementById("c").getContext("2d");
+        let x = 150; 
+        let y = 150; 
+        let p = 0;
+        let durum = ""; 
+
+        function oyun() {
+           // ctx.clearRect(0, 0, 300, 300);
+           ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; // Kuyruk silinik devam etsin
+           ctx.fillRect(0, 0, 300, 300);
+            
+            // YEM (Sabit duruyor)
+            ctx.fillStyle = "red";
+            ctx.fillRect(50, 50, 20, 20); 
+
+            // HAREKET
+            if (durum == "sağ") x++;//Satır
+            if (durum == "sol") x--;//Satır
+            if (durum == "yukarı") y--;//Sütun
+            if (durum == "aşağı") y++;//Sütun
+
+            // YILAN (Kare)
+            ctx.fillStyle = "green";
+            ctx.fillRect(x, y, 20, 20);
+
+            // YEME ANI (Çarpışma)
+            if (x < 70 && x > 30 && y < 70 && y > 30) {
+                p++;
+                document.getElementById("sonuc").innerText = "Puan: " + p;
+                x = 150; y = 150; durum = ""; // Başlangıca dönme.
+            }
+
+            requestAnimationFrame(oyun);
+        }
+
+        oyun();
+
+        // TUŞLAR
+        addEventListener("keydown", function(e) {
+            if (e.key == "ArrowRight") durum = "sağ";
+            if (e.key == "ArrowLeft")  durum = "sol";
+            if (e.key == "ArrowUp")    durum = "yukarı";
+            if (e.key == "ArrowDown")  durum = "aşağı";
+        });
+    </script>
+</body>
+</html>
