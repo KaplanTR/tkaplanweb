@@ -1,25 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Firebase Üyelik Sistemi</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+        .container { width: 300px; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        input { width: 90%; margin-bottom: 10px; padding: 8px; }
+        button { width: 100%; padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; }
+        .toggle { font-size: 12px; margin-top: 10px; color: blue; cursor: pointer; text-align: center; }
+    </style>
 </head>
 <body>
-    <h1>KAYIT</h1>
 
-    <input type="text" placeholder="Ad Giriniz"><br>
-    <br>
-    <input type="text" placeholder="Soyad Giriniz"><br>
-    <br>
-    <input type="text" placeholder="Email Giriniz"><br>
-    <br>
-    <input type="text" placeholder="Tuttuğunuz Takımı Giriniz"><br>
-    <br>
-    <button>KAYDET</button>
-    </BR>
-    <a href="index.html">ANA SAYFAYA DÖN </a>
+<div class="container">
+    <h2 id="form-title">Giriş Yap</h2>
+    <input type="email" id="email" placeholder="E-posta">
+    <input type="password" id="password" placeholder="Şifre">
+    <button id="main-btn">Giriş Yap</button>
+    <div id="toggle-form" class="toggle">Hesabın yok mu? Kayıt Ol</div>
+    <p id="message"></p>
+</div>
 
+<!-- Firebase SDK (Modüler Sürüm) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // BURAYI KENDİ BİLGİLERİNLE DEĞİŞTİR
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpocblv-3GoEasRVJIwOCuYSOOX4xIx84",
+    authDomain: "anadolusoftware.firebaseapp.com",
+    projectId: "anadolusoftware",
+    storageBucket: "anadolusoftware.firebasestorage.app",
+    messagingSenderId: "343342589164",
+    appId: "1:343342589164:web:5aad1c0ddd7cd354fd31c9",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInp = document.getElementById('email');
+    const passInp = document.getElementById('password');
+    const mainBtn = document.getElementById('main-btn');
+    const msg = document.getElementById('message');
+    const toggleBtn = document.getElementById('toggle-form');
+    const title = document.getElementById('form-title');
+
+    let isLoginMode = true;
+
+    // Mod Değiştirme (Giriş/Kayıt)
+    toggleBtn.onclick = () => {
+        isLoginMode = !isLoginMode;
+        title.innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
+        mainBtn.innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
+        toggleBtn.innerText = isLoginMode ? "Hesabın yok mu? Kayıt Ol" : "Zaten hesabın var mı? Giriş Yap";
+    };
+
+    mainBtn.onclick = async () => {
+        const email = emailInp.value;
+        const pass = passInp.value;
+
+        try {
+            if (isLoginMode) {
+                await signInWithEmailAndPassword(auth, email, pass);
+                msg.innerText = "Başarıyla giriş yapıldı!";
+            } else {
+                await createUserWithEmailAndPassword(auth, email, pass);
+                msg.innerText = "Hesap oluşturuldu!";
+            }
+        } catch (error) {
+            msg.innerText = "Hata: " + error.message;
+        }
+    };
+</script>
 </body>
 </html>
